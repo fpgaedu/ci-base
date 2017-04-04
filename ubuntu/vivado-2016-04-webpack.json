@@ -1,4 +1,5 @@
 {
     "vivado_version": "2016.4",
-    "vivado_edition": "webpack"
+    "vivado_edition": "webpack",
+    "vivado_install_path": "/home/vagrant/Xilinx/Vivado/2016.4"
 }
