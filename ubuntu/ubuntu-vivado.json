@@ -79,6 +79,7 @@
         "no_proxy={{user `no_proxy`}}",
         "VIVADO_INSTALL_ARCHIVE=/tmp/vivado_install_archive.tar.gz",
         "VIVADO_INSTALL_CONFIG=/tmp/vivado_install_config.txt",
+        "VIVADO_INSTALL_PATH={{user `vivado_install_path`}}",
         "XILINX_INSTALL_PATH={{user `xilinx_install_path`}}"
       ],
       "execute_command": "echo '{{ user `ssh_password` }}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
