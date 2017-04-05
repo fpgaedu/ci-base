@@ -1,0 +1,7 @@
+{
+    "vivado_version": "2016.2",
+    "vivado_edition": "webpack",
+    "vivado_install_path": "/home/vagrant/Xilinx/Vivado/2016.2/",
+    "vivado_install_config": "vivado/vivado_lab_install_config.txt",
+    "vivado_install_archive_path": "Xilinx_Vivado_SDK_2016.2_0605_1.tar.gz"
+}

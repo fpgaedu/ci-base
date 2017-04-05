@@ -1,3 +1,4 @@
 {
-  "os_name": "ubuntu-12-04"
+  "os_name": "ubuntu-12-04",
+  "ovf_source_path": "../ubuntu/output-ubuntu1404-virtualbox-iso/ubuntu1204.ovf"
 }

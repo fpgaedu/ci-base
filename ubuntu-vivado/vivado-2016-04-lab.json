@@ -2,5 +2,6 @@
     "vivado_version": "2016.4",
     "vivado_edition": "lab",
     "vivado_install_path": "/home/vagrant/Xilinx/Vivado_Lab/2016.4/",
-    "vivado_install_config": "vivado/vivado_lab_install_config.txt"
+    "vivado_install_config": "vivado/vivado_lab_install_config.txt",
+    "vivado_install_archive_path": "Xilinx_Vivado_Lab_Lin_2016.4_0124_1.tar.gz"
 }
