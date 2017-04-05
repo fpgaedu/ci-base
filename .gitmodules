@@ -1,0 +1,3 @@
+[submodule "ubuntu"]
+	path = ubuntu
+	url = git@github.com:fpgaedu/ci-base-ubuntu.git
