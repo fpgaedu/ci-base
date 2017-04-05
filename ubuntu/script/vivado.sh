@@ -9,6 +9,12 @@ tar -xvzf $VIVADO_INSTALL_ARCHIVE -C /tmp/vivado_install --strip-components=1
 # source settings64.sh in .bashrc
 touch /home/vagrant/.bashrc
 echo "source $VIVADO_INSTALL_PATH/settings64.sh" >> /home/vagrant/.bashrc
+echo "export LC_ALL=\"en_US.UTF-8\"" >> /home/vagrant/.bashrc
+
+# In order to support headless vm's, as per https://www.xilinx.com/support/answers/62553.html,
+# a line in base.tcl containing rdi:x11_workaround needs to be removed
+grep -v rdi::x11_workaround $VIVADO_INSTALL_PATH/lib/scripts/rdi/features/base/base.tcl > /tmp/base.tcl
+mv /tmp/base.tcl $VIVADO_INSTALL_PATH/lib/scripts/rdi/features/base/base.tcl
 
 # must change working directory or else driver install will fail.
 cd $VIVADO_INSTALL_PATH/data/xicom/cable_drivers/lin64/install_script/install_drivers/
