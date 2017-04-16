@@ -5,7 +5,7 @@
       "output_directory": "output-{{user `os_name`}}-vivado-{{user `vivado_version`}}-{{user `vivado_edition`}}-virtualbox-ovf",
       "post_shutdown_delay": "1m",
       "shutdown_command": "echo '{{ user `ssh_password` }}'|sudo -S shutdown -P now",
-      "source_path": "{{user `ovf_source_path`}}",
+      "source_path": "{{user `ovf_source_uri`}}",
       "ssh_password": "{{ user `ssh_password` }}",
       "ssh_username": "{{ user `ssh_username` }}",
       "ssh_wait_timeout": "5m",
@@ -36,32 +36,25 @@
   ],
   "provisioners": [
     {
-      "type": "file",
-      "source": "{{user `vivado_install_archive_path`}}",
-      "destination": "/tmp/vivado_install_archive.tar.gz"
-    },
-    {
-      "type": "file",
-      "source": "{{user `vivado_install_config_path`}}",
-      "destination": "/tmp/vivado_install_config.txt"
+      "type": "ansible",
+      "playbook_file": "./playbook/vivado-2016-04-webpack.yaml",
+      "ansible_env_vars": [
+        "AWS_ACCESS_KEY={{ user `aws_access_key` }}",
+        "AWS_SECRET_KEY={{ user `aws_secret_key` }}"
+      ]
     },
     {
       "type": "shell",
-      "environment_vars": [
-        "VIVADO_INSTALL_ARCHIVE=/tmp/vivado_install_archive.tar.gz",
-        "VIVADO_INSTALL_CONFIG=/tmp/vivado_install_config.txt",
-        "VIVADO_INSTALL_PATH={{user `vivado_install_path`}}",
-        "XILINX_INSTALL_PATH={{user `xilinx_install_path`}}"
-      ],
       "execute_command": "echo '{{ user `ssh_password` }}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
       "scripts": [
-        "script/vivado.sh",
         "script/minimize.sh",
         "script/cleanup.sh"
       ]
     }
   ],
   "variables": {
+    "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
+    "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
     "cpus": "2",
     "disk_size": "65536",
     "headless": "true",
@@ -72,7 +65,7 @@
     "version": "0.1.0",
     "virtualbox_guest_os_type": "Ubuntu_64",
     "os_name": "ubuntu",
-    "ovf_source_path": "../ubuntu/output-ubuntu1604-virtualbox-iso/ubuntu1604.ovf",
+    "ovf_source_uri": "http://s3.fpgaedu.com/ovf/",
     "vivado_version": "2016.4",
     "vivado_edition": "webpack",
     "vivado_install_archive_path": "Xilinx_Vivado_SDK_2016.4_0124_1.tar.gz",

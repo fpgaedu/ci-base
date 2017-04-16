@@ -1,0 +1,63 @@
+- hosts: vivado_machines
+  vars:
+      s3_endpoint: http://s3.fpgaedu.com
+  tasks:
+      - name: download vivado installer
+        environment:
+        s3:
+            bucket: vivado_install
+            dest: /tmp/Xilinx_Vivado_SDK_2016.4_0124_1.tar.gz
+            mode: get 
+            object: Xilinx_Vivado_SDK_2016.4_0124_1.tar.gz
+            s3_url: "{{ s3_endpoint }}"
+
+      - name: download vivado installer configuration
+        s3:
+            bucket: vivado_install
+            dest: /tmp/vivado_webpack_install_config.txt
+            mode: get
+            object: vivado_webpack_install_config.txt
+            s3_url: "{{ s3_endpoint }}"
+
+      - name: extract vivado installer
+        unarchive:
+            copy: false
+            dest: /tmp
+            remote_src: true
+            src: /tmp/Xilinx_Vivado_SDK_2016.4_0124_1.tar.gz
+
+      - name: install vivado
+        shell: |
+            /tmp/Xilinx_Vivado_SDK_2016.4_0124_1/xsetup \
+            --agree 3rdPartyEULA,WebTalkTerms,XilinxEULA \
+            --batch Install \
+            --config /tmp/vivado_webpack_install_config.txt \
+            --location /home/vagrant/Xilinx
+
+        # must change working directory or else driver install will fail.
+      - name: install vivado drivers
+        become: true
+        shell: |
+            sh /home/vagrant/Xilinx/Vivado/2016.4/data/xicom/cable_drivers/lin64/install_script/install_drivers/install_drivers
+        args:
+            chdir: /home/vagrant/Xilinx/Vivado/2016.4/data/xicom/cable_drivers/lin64/install_script/install_drivers/
+
+      - name: source vivado settings in .bashrc
+        lineinfile: 
+            line: source $VIVADO_INSTALL_PATH/settings64.sh
+            path: /home/vagrant/.bashrc
+
+      - name: add LC_ALL line to .bashrc
+        lineinfile:
+            line: export LC_ALL=\"en_US.UTF-8\"
+            path: /home/vagrant/.bashrc
+
+        # In order to support headless vm's, as per 
+        # https://www.xilinx.com/support/answers/62553.html, a line in 
+        # base.tcl containing rdi:x11_workaround needs to be removed
+      - name: remove x11 workaround line in base.tcl
+        lineinfile: 
+            line: rdi::x11_workaround
+            path: /home/vagrant/Xilinx/Vivado/2016.4/lib/scripts/rdi/features/base/base.tcl
+            state: absent
+
