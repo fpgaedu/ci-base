@@ -1,7 +1,16 @@
-- hosts: vivado_machines
+- hosts: all
   vars:
       s3_endpoint: http://s3.fpgaedu.com
   tasks:
+      - apt: 
+            name: python
+        become: true
+      - apt: 
+            name: python-pip
+        become: true
+      - pip:
+            name: boto
+        become: true
       - name: download vivado installer
         environment:
         s3:
