@@ -1,4 +1,4 @@
 {
   "os_name": "ubuntu-16-04",
-  "ovf_source_path": "../ubuntu/output-ubuntu1604-virtualbox-iso/ubuntu1604.ovf"
+  "ova_source_url": "http://s3.fpgaedu.com/ovf/ubuntu-16-04-x64-2017-04-29-01.ova"
 }

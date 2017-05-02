@@ -5,21 +5,15 @@
       "output_directory": "output-{{user `os_name`}}-vivado-{{user `vivado_version`}}-{{user `vivado_edition`}}-virtualbox-ovf",
       "post_shutdown_delay": "1m",
       "shutdown_command": "echo '{{ user `ssh_password` }}'|sudo -S shutdown -P now",
-      "source_path": "{{user `ovf_source_uri`}}",
+      "source_path": "{{user `ova_source_url`}}",
       "ssh_password": "{{ user `ssh_password` }}",
       "ssh_username": "{{ user `ssh_username` }}",
       "ssh_wait_timeout": "5m",
       "type": "virtualbox-ovf",
       "vboxmanage": [
-        [
-          "modifyvm", "{{.Name}}", "--nictype1", "virtio"
-        ],
-        [
-          "modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}"
-        ],
-        [
-          "modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}"
-        ]
+        [ "modifyvm", "{{.Name}}", "--nictype1", "virtio" ],
+        [ "modifyvm", "{{.Name}}", "--memory", "{{ user `memory` }}" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "{{ user `cpus` }}" ]
       ],
       "guest_additions_mode": "disable",
       "virtualbox_version_file": "",
@@ -28,19 +22,21 @@
   ],
   "post-processors": [
     {
-      "keep_input_artifact": false,
+      "keep_input_artifact": true,
       "output": "output-vagrant-box/{{user `os_name`}}/vivado-{{user `vivado_version`}}-{{user `vivado_edition`}}/{{.Provider}}.box",
-      "type": "vagrant",
-      "vagrantfile_template": "{{ user `vagrantfile_template` }}"
+      "type": "vagrant"
     }
   ],
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "./playbook/vivado-2016-04-webpack.yaml",
+      "playbook_file": "./playbook/vivado.yaml",
       "ansible_env_vars": [
-        "AWS_ACCESS_KEY={{ user `aws_access_key` }}",
-        "AWS_SECRET_KEY={{ user `aws_secret_key` }}"
+        "VIVADO_VERSION={{ user `vivado_version` }}",
+        "VIVADO_EDITION={{ user `vivado_edition` }}",
+        "VIVADO_INSTALLER_ARCHIVE_S3_URL={{ user `vivado_installer_archive_s3_url` }}",
+        "AWS_ACCESS_KEY_ID={{ user `aws_access_key` }}",
+        "AWS_SECRET_ACCESS_KEY={{ user `aws_secret_key` }}"
       ]
     },
     {
@@ -53,25 +49,20 @@
     }
   ],
   "variables": {
-    "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
-    "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
+    "aws_access_key_id": "{{ env `AWS_ACCESS_KEY_ID` }}",
+    "aws_secret_access_key": "{{ env `AWS_SECRET_ACCESS_KEY` }}",
     "cpus": "2",
-    "disk_size": "65536",
     "headless": "true",
-    "memory": "2048",
+    "memory": "1024",
     "ssh_password": "vagrant",
     "ssh_username": "vagrant",
-    "vagrantfile_template": "",
     "version": "0.1.0",
     "virtualbox_guest_os_type": "Ubuntu_64",
-    "os_name": "ubuntu",
-    "ovf_source_uri": "http://s3.fpgaedu.com/ovf/",
-    "vivado_version": "2016.4",
+    "os_name": "ubuntu-16-04",
+    "ova_source_url": "http://s3.fpgaedu.com/ovf/ubuntu-16-04-x64-2017-04-29-01.ova",
+    "vivado_version": "2017.4",
     "vivado_edition": "webpack",
-    "vivado_install_archive_path": "Xilinx_Vivado_SDK_2016.4_0124_1.tar.gz",
-    "vivado_install_config_path": "vivado/vivado_webpack_install_config.txt",
-    "vivado_install_path": "/home/vagrant/Xilinx/Vivado/2016.4/",
-    "xilinx_install_path": "/home/vagrant/Xilinx/"
+    "vivado_installer_archive_s3_url": "s3://vivado-install/Xilinx_Vivado_SDK_2017.1_0415_1.tar.gz"
   }
 }
 

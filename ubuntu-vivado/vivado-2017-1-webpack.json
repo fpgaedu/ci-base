@@ -1,4 +1,5 @@
 {
     "vivado_version": "2017.1",
     "vivado_edition": "webpack",
+    "vivado_installer_archive_s3_url": "s3://vivado-install/Xilinx_Vivado_SDK_2017.1_0415_1.tar.gz"
 }
