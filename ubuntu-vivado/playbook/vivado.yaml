@@ -1,0 +1,39 @@
+- hosts: default
+  vars:
+      aws_s3_access_key: "{{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+      aws_s3_secret_key: "{{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+      vivado_version: "{{ lookup('env', 'VIVADO_VERSION') }}"
+      vivado_edition: "{{ lookup('env', 'VIVADO_EDITION') }}"
+      vivado_installer_archive_path: /tmp/installer.tar.gz
+      vivado_installer_archive_s3_url: "{{ lookup('env', 'VIVADO_INSTALLER_ARCHIVE_S3_URL') }}"
+
+  pre_tasks:
+
+      - name: Install python and pip
+        become: true
+        apt:
+          name: "{{ item }}"
+          state: present
+        with_items:
+            - python-minimal
+            - python-pip
+
+      - name: Install aws-cli
+        become: true
+        pip:
+          name: awscli
+      
+  roles:
+      # Download installer archive from s3
+    - role: matthijsbos.aws_s3
+      aws_s3_src: "{{ vivado_installer_archive_s3_url }}"
+      aws_s3_dest: "{{ vivado_installer_archive_path }}"
+      aws_s3_endpoint_url: http://s3.fpgaedu.com
+      aws_s3_region: us-east-1
+      
+      # Install vivado, the installer archive's location is set above in the
+      # vivado_installer_archive_path var
+    - role: matthijsbos.vivado
+      vivado_location: /home/vagrant/Xilinx
+      vivado_headless: true
+      vivado_source_bashrc: true
